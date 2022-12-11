@@ -3,13 +3,13 @@ use "path:/opt/homebrew/opt/libressl/lib" if osx and arm
 use "lib:crypto"
 use "lib:bcrypt" if windows
 
-use @EVP_MD_CTX_new[Pointer[_EVPCTX]]() if "openssl_1.1.x"
-use @EVP_MD_CTX_create[Pointer[_EVPCTX]]() if not "openssl_1.1.x"
+use @EVP_MD_CTX_new[Pointer[_EVPCTX]]() if "openssl_1.1.x" or "openssl_3"
+use @EVP_MD_CTX_create[Pointer[_EVPCTX]]() if "openssl_0.9.0"
 use @EVP_DigestInit_ex[I32](ctx: Pointer[_EVPCTX] tag, t: Pointer[_EVPMD], impl: USize)
 use @EVP_DigestUpdate[I32](ctx: Pointer[_EVPCTX] tag, d: Pointer[U8] tag, cnt: USize)
 use @EVP_DigestFinal_ex[I32](ctx: Pointer[_EVPCTX] tag, md: Pointer[U8] tag, s: Pointer[USize])
-use @EVP_MD_CTX_free[None](ctx: Pointer[_EVPCTX]) if "openssl_1.1.x"
-use @EVP_MD_CTX_destroy[None](ctx: Pointer[_EVPCTX]) if not "openssl_1.1.x"
+use @EVP_MD_CTX_free[None](ctx: Pointer[_EVPCTX]) if "openssl_1.1.x" or "openssl_3"
+use @EVP_MD_CTX_destroy[None](ctx: Pointer[_EVPCTX]) if "openssl_0.9.0"
 
 use @EVP_md4[Pointer[_EVPMD]]()
 use @EVP_md5[Pointer[_EVPMD]]()
@@ -39,7 +39,7 @@ class Digest
     Use the MD4 algorithm to calculate the hash.
     """
     _digest_size = 16
-    ifdef "openssl_1.1.x" then
+    ifdef "openssl_1.1.x" or "openssl_3" then
       _ctx = @EVP_MD_CTX_new()
     else
       _ctx = @EVP_MD_CTX_create()
@@ -51,7 +51,7 @@ class Digest
     Use the MD5 algorithm to calculate the hash.
     """
     _digest_size = 16
-    ifdef "openssl_1.1.x" then
+    ifdef "openssl_1.1.x" or "openssl_3" then
       _ctx = @EVP_MD_CTX_new()
     else
       _ctx = @EVP_MD_CTX_create()
@@ -63,7 +63,7 @@ class Digest
     Use the RIPEMD160 algorithm to calculate the hash.
     """
     _digest_size = 20
-    ifdef "openssl_1.1.x" then
+    ifdef "openssl_1.1.x" or "openssl_3" then
       _ctx = @EVP_MD_CTX_new()
     else
       _ctx = @EVP_MD_CTX_create()
@@ -75,7 +75,7 @@ class Digest
     Use the SHA1 algorithm to calculate the hash.
     """
     _digest_size = 20
-    ifdef "openssl_1.1.x" then
+    ifdef "openssl_1.1.x" or "openssl_3" then
       _ctx = @EVP_MD_CTX_new()
     else
       _ctx = @EVP_MD_CTX_create()
@@ -87,7 +87,7 @@ class Digest
     Use the SHA256 algorithm to calculate the hash.
     """
     _digest_size = 28
-    ifdef "openssl_1.1.x" then
+    ifdef "openssl_1.1.x" or "openssl_3" then
       _ctx = @EVP_MD_CTX_new()
     else
       _ctx = @EVP_MD_CTX_create()
@@ -99,7 +99,7 @@ class Digest
     Use the SHA256 algorithm to calculate the hash.
     """
     _digest_size = 32
-    ifdef "openssl_1.1.x" then
+    ifdef "openssl_1.1.x" or "openssl_3" then
       _ctx = @EVP_MD_CTX_new()
     else
       _ctx = @EVP_MD_CTX_create()
@@ -111,7 +111,7 @@ class Digest
     Use the SHA384 algorithm to calculate the hash.
     """
     _digest_size = 48
-    ifdef "openssl_1.1.x" then
+    ifdef "openssl_1.1.x" or "openssl_3" then
       _ctx = @EVP_MD_CTX_new()
     else
       _ctx = @EVP_MD_CTX_create()
@@ -123,7 +123,7 @@ class Digest
     Use the SHA512 algorithm to calculate the hash.
     """
     _digest_size = 64
-    ifdef "openssl_1.1.x" then
+    ifdef "openssl_1.1.x" or "openssl_3" then
       _ctx = @EVP_MD_CTX_new()
     else
       _ctx = @EVP_MD_CTX_create()
@@ -135,7 +135,7 @@ class Digest
     Use the Shake128 algorithm to calculate the hash.
     """
     _digest_size = 16
-    ifdef "openssl_1.1.x" then
+    ifdef "openssl_1.1.x" or "openssl_3" then
       _ctx = @EVP_MD_CTX_new()
       @EVP_DigestInit_ex(_ctx, @EVP_shake128(), USize(0))
     else
@@ -147,7 +147,7 @@ class Digest
     Use the Shake256 algorithm to calculate the hash.
     """
     _digest_size = 32
-    ifdef "openssl_1.1.x" then
+    ifdef "openssl_1.1.x" or "openssl_3" then
       _ctx = @EVP_MD_CTX_new()
       @EVP_DigestInit_ex(_ctx, @EVP_shake256(), USize(0))
     else
@@ -175,7 +175,7 @@ class Digest
           @pony_alloc(@pony_ctx(), size), size)
         end
       @EVP_DigestFinal_ex(_ctx, digest.cpointer(), Pointer[USize])
-      ifdef "openssl_1.1.x" then
+      ifdef "openssl_1.1.x" or "openssl_3" then
         @EVP_MD_CTX_free(_ctx)
       else
         @EVP_MD_CTX_destroy(_ctx)
