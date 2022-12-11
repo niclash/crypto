@@ -41,8 +41,10 @@ class Digest
     _digest_size = 16
     ifdef "openssl_1.1.x" or "openssl_3" then
       _ctx = @EVP_MD_CTX_new()
-    else
+    elseif "openssl_0.9.0" then
       _ctx = @EVP_MD_CTX_create()
+    else
+      compile_error "You must select an SSL version to use."
     end
     @EVP_DigestInit_ex(_ctx, @EVP_md4(), USize(0))
 
@@ -53,8 +55,10 @@ class Digest
     _digest_size = 16
     ifdef "openssl_1.1.x" or "openssl_3" then
       _ctx = @EVP_MD_CTX_new()
-    else
+    elseif "openssl_0.9.0" then
       _ctx = @EVP_MD_CTX_create()
+    else
+      compile_error "You must select an SSL version to use."
     end
     @EVP_DigestInit_ex(_ctx, @EVP_md5(), USize(0))
 
@@ -65,8 +69,10 @@ class Digest
     _digest_size = 20
     ifdef "openssl_1.1.x" or "openssl_3" then
       _ctx = @EVP_MD_CTX_new()
-    else
+    elseif "openssl_0.9.0" then
       _ctx = @EVP_MD_CTX_create()
+    else
+      compile_error "You must select an SSL version to use."
     end
     @EVP_DigestInit_ex(_ctx, @EVP_ripemd160(), USize(0))
 
@@ -77,8 +83,10 @@ class Digest
     _digest_size = 20
     ifdef "openssl_1.1.x" or "openssl_3" then
       _ctx = @EVP_MD_CTX_new()
-    else
+    elseif "openssl_0.9.0" then
       _ctx = @EVP_MD_CTX_create()
+    else
+      compile_error "You must select an SSL version to use."
     end
     @EVP_DigestInit_ex(_ctx, @EVP_sha1(), USize(0))
 
@@ -89,8 +97,10 @@ class Digest
     _digest_size = 28
     ifdef "openssl_1.1.x" or "openssl_3" then
       _ctx = @EVP_MD_CTX_new()
-    else
+    elseif "openssl_0.9.0" then
       _ctx = @EVP_MD_CTX_create()
+    else
+      compile_error "You must select an SSL version to use."
     end
     @EVP_DigestInit_ex(_ctx, @EVP_sha224(), USize(0))
 
@@ -101,8 +111,10 @@ class Digest
     _digest_size = 32
     ifdef "openssl_1.1.x" or "openssl_3" then
       _ctx = @EVP_MD_CTX_new()
-    else
+    elseif "openssl_0.9.0" then
       _ctx = @EVP_MD_CTX_create()
+    else
+      compile_error "You must select an SSL version to use."
     end
     @EVP_DigestInit_ex(_ctx, @EVP_sha256(), USize(0))
 
@@ -113,8 +125,10 @@ class Digest
     _digest_size = 48
     ifdef "openssl_1.1.x" or "openssl_3" then
       _ctx = @EVP_MD_CTX_new()
-    else
+    elseif "openssl_0.9.0" then
       _ctx = @EVP_MD_CTX_create()
+    else
+      compile_error "You must select an SSL version to use."
     end
     @EVP_DigestInit_ex(_ctx, @EVP_sha384(), USize(0))
 
@@ -125,8 +139,10 @@ class Digest
     _digest_size = 64
     ifdef "openssl_1.1.x" or "openssl_3" then
       _ctx = @EVP_MD_CTX_new()
-    else
+    elseif "openssl_0.9.0" then
       _ctx = @EVP_MD_CTX_create()
+    else
+      compile_error "You must select an SSL version to use."
     end
     @EVP_DigestInit_ex(_ctx, @EVP_sha512(), USize(0))
 
@@ -139,7 +155,7 @@ class Digest
       _ctx = @EVP_MD_CTX_new()
       @EVP_DigestInit_ex(_ctx, @EVP_shake128(), USize(0))
     else
-      compile_error "openssl_0.9.x dose not support shake128"
+      compile_error "openssl_0.9.x does not support shake128"
     end
 
   new shake256() =>
@@ -151,7 +167,7 @@ class Digest
       _ctx = @EVP_MD_CTX_new()
       @EVP_DigestInit_ex(_ctx, @EVP_shake256(), USize(0))
     else
-      compile_error "openssl_0.9.x dose not support shake256"
+      compile_error "openssl_0.9.x does not support shake256"
     end
 
   fun ref append(input: ByteSeq) ? =>
@@ -177,8 +193,10 @@ class Digest
       @EVP_DigestFinal_ex(_ctx, digest.cpointer(), Pointer[USize])
       ifdef "openssl_1.1.x" or "openssl_3" then
         @EVP_MD_CTX_free(_ctx)
-      else
+      elseif "openssl_0.9.0" then
         @EVP_MD_CTX_destroy(_ctx)
+      else
+        compile_error "You must select an SSL version to use."
       end
       let h = (consume digest).array()
       _hash = h
